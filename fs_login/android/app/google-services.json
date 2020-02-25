@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "598664055419",
+    "firebase_url": "https://food-savior-56bbb.firebaseio.com",
+    "project_id": "food-savior-56bbb",
+    "storage_bucket": "food-savior-56bbb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598664055419:android:705ec8f0878ec0bb7430de",
+        "android_client_info": {
+          "package_name": "com.example.fs_login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "598664055419-sd1v4cjlnjnbk508ti0qenmealkja5an.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fs_login",
+            "certificate_hash": "703b958c501405c6595c5fb2cec2eb7c6308620d"
+          }
+        },
+        {
+          "client_id": "598664055419-650f0203ochj8imsut5f9hae6clujkt2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-L4bn7cBo3LMNcbvDYn1GmEGiRWo1fDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "598664055419-650f0203ochj8imsut5f9hae6clujkt2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
