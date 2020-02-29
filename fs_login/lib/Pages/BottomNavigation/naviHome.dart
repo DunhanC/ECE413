@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fs_login/Pages/Setup/signIn.dart';
 import 'package:fs_login/Pages/BottomNavigation/profile.dart';
@@ -8,6 +7,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fs_login/horizontal_List.dart';
 import 'package:fs_login/horizontal_List2.dart';
 import 'package:fs_login/dataSearch.dart';
+import 'package:fs_login/fs_api.dart';
+import 'package:fs_login/auth_notifier.dart';
+import 'package:provider/provider.dart';
 
 class NHome extends StatefulWidget {
   @override
@@ -40,7 +42,7 @@ class _NHomeState extends State<NHome> {
 
   @override
   Widget build(BuildContext context) {
-
+    AuthNotifier authNotifier = Provider.of<AuthNotifier>(context);
     return Scaffold(
 
       appBar: AppBar(
@@ -114,7 +116,7 @@ class _NHomeState extends State<NHome> {
                 title: new Text("Log out"),
 
                 onTap: (){
-                  logOut();
+                  signout(authNotifier);
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> MyLoginPage(),fullscreenDialog: true));
                 },
               ),
@@ -219,13 +221,4 @@ class _NHomeState extends State<NHome> {
   }
 }
 
-Future<void> logOut() async {
-  try {
-    await FirebaseAuth.instance.signOut();
-    GoogleSignIn _googleSignIn = GoogleSignIn();
-    await _googleSignIn.signOut();
-  } catch (e) {
-    print("error logging out");
-  }
-}
 

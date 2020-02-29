@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:fs_login/donation.dart';
+import 'package:fs_login/reserve.dart';
 class Modal{
 
   mainBottomSheet(BuildContext context){
@@ -25,18 +26,19 @@ class Modal{
       onTap: (){
         
         Navigator.pop(context);
-        action();
+        action(context);
         
       },
     );
 
   }
 
-  _action1(){
-      print('action 1');
+  _action1(BuildContext context){
+
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Donation(),fullscreenDialog: true));
   }
 
-  _action2(){
-    print('action 2');
+  _action2(BuildContext context){
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Reservation(),fullscreenDialog: true));
   }
 }

@@ -1,6 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fs_login/Pages/Setup/signIn.dart';
+import 'package:fs_login/user.dart';
+import 'package:fs_login/fs_api.dart';
+import 'package:fs_login/auth_notifier.dart';
+import 'package:provider/provider.dart';
+
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -8,14 +13,41 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  String _email, _password;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _passwordControl = new TextEditingController();
+  User _user = User();
+
+  @override
+  void initState() {
+    AuthNotifier authNotifier = Provider.of<AuthNotifier>(
+        context, listen: false);
+    initializeCurrentUser(authNotifier);
+    super.initState();
+  }
+
+  void _submitForm() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+
+    _formKey.currentState.save();
+
+    AuthNotifier authNotifier = Provider.of<AuthNotifier>(
+        context, listen: false);
+
+    signup(_user, authNotifier);
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => MyLoginPage(), fullscreenDialog: true));
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
-        title: Text('Sign Up Page'),
-      ),
+        appBar: new AppBar(
+          title: Text('Sign Up Page'),
+        ),
         resizeToAvoidBottomPadding: false,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,14 +60,22 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.only(top: 10.0, left: 20.0,right: 20.0),
+                    padding: EdgeInsets.only(
+                        top: 10.0, left: 20.0, right: 20.0),
                     child: TextFormField(
                       validator: (input) {
-                        if(input.isEmpty){
-                          return 'Please type an email';
+                        if (input.isEmpty) {
+                          return "Please type an email";
                         }
+                        if (!RegExp(
+                            r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                            .hasMatch(input)) {
+                          return 'Please enter a valid email address';
+                        }
+
+                        return null;
                       },
-                      onSaved: (input) => _email = input,
+                      onSaved: (input) => _user.email = input,
                       decoration: InputDecoration(
                           labelText: 'EMAIL',
                           labelStyle: TextStyle(
@@ -51,16 +91,24 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.only(top: 10.0, left: 20.0,right: 20.0),
+                    padding: EdgeInsets.only(
+                        top: 10.0, left: 20.0, right: 20.0),
                     child:
 //                  SizedBox(height: 20.0,),
                     TextFormField(
+                      controller: _passwordControl,
                       validator: (input) {
-                        if(input.length < 6){
-                          return 'Password length should be at least 6';
+                        if (input.isEmpty) {
+                          return 'Password is required';
                         }
+
+                        if (input.length < 5 || input.length > 20) {
+                          return 'Password must be betweem 5 and 20 characters';
+                        }
+
+                        return null;
                       },
-                      onSaved: (input) => _password = input,
+                      onSaved: (input) => _user.password = input,
                       decoration: InputDecoration(
                           labelText: 'PASSWORD',
                           labelStyle: TextStyle(
@@ -81,7 +129,7 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             SizedBox(height: 20.0),
             Container(
-              padding: EdgeInsets.only(top: 10.0, left: 120.0,right: 120.0),
+              padding: EdgeInsets.only(top: 10.0, left: 120.0, right: 120.0),
               height: 45.0,
               child: Material(
                 borderRadius: BorderRadius.circular(20.0),
@@ -89,8 +137,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 color: Colors.blue,
                 elevation: 7.0,
                 child: GestureDetector(
-                  onTap: (){
-                    signUp();
+                  onTap: () {
+                    _submitForm();
                   },
                   child: Center(
                     child: Text(
@@ -108,20 +156,5 @@ class _SignUpPageState extends State<SignUpPage> {
           ],
         )
     );
-  }
-  Future <void> signUp() async {
-    final _formState = _formKey.currentState;
-    if(_formState.validate()){
-      _formState.save();
-      try {
-        AuthResult user = (await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: _email, password: _password));
-        user.user.sendEmailVerification();
-        //Navigator.of(context).pop();
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> MyLoginPage(),fullscreenDialog: true));
-      }catch(e){
-        print(e.message);
-      }
-    }
   }
 }

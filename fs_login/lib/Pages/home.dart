@@ -4,7 +4,7 @@ import 'package:fs_login/Pages/BottomNavigation/naviMap.dart';
 import 'package:fs_login/Pages/BottomNavigation/naviFavor.dart';
 import 'package:fs_login/Pages/BottomNavigation/naviFeeback.dart';
 import 'package:fs_login/Modal.dart';
-
+import 'package:fs_login/fruitStorage.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -79,7 +79,7 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                       setState(() {
                         currentScreen =
-                            NFavor(); // if user taps on this dashboard tab will be active
+                            Fruitstorage(); // if user taps on this dashboard tab will be active
                         currentTab = 1;
                       });
                     },
@@ -112,7 +112,9 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                       setState(() {
                         currentScreen =
-                            NMap(); // if user taps on this dashboard tab will be active
+                        //NMap();
+                            NFeeback();
+                            // if user taps on this dashboard tab will be active
                         currentTab = 2;
                       });
                     },
