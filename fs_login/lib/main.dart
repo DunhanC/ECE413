@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fs_login/Pages/Setup/signIn.dart';
 import 'package:fs_login/Pages/home.dart';
 import 'package:fs_login/fruitStorage.dart';
-import 'package:fs_login/fruit_notifier.dart';
+import 'package:fs_login/food_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fs_login/auth_notifier.dart';
@@ -13,7 +13,7 @@ void main() => runApp(MultiProvider(
       create: (context) => AuthNotifier(),
     ),
     ChangeNotifierProvider(
-      create: (context) => FruitNotifier(),
+      create: (context) => FoodNotifier(),
     ),
   ],
   child: MyApp(),

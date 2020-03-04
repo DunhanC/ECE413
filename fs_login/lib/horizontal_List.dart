@@ -22,7 +22,7 @@ class HorizontalList extends StatelessWidget {
               Image.network('https://img.icons8.com/cotton/64/000000/grape.png',width: 55.0,
                 height: 35.0,),
               Text(
-                'Favorite',
+                'Fruit',
                 style: TextStyle(
                     fontSize: 14.0,
                     fontWeight: FontWeight.bold

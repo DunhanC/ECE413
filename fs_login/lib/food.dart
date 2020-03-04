@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Fruit {
+class Food {
   String itemname;
   String pname;
 
-  Fruit();
+  Food();
 
-  Fruit.fromMap(Map<String, dynamic> data) {
+  Food.fromMap(Map<String, dynamic> data) {
     itemname = data['ItemName'];
     pname = data['PName'];
 

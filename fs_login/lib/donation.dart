@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fs_login/Pages/home.dart';
 import 'package:provider/provider.dart';
-import 'package:fs_login/fruit_notifier.dart';
-import 'package:fs_login/fruit.dart';
+import 'package:fs_login/food_notifier.dart';
+import 'package:fs_login/food.dart';
 
 
 class Donation extends StatefulWidget {
@@ -13,19 +13,19 @@ class Donation extends StatefulWidget {
 
 class _DonationState extends State<Donation> {
   String foodType;
-  Fruit _currentFruit;
+  Food _currentFruit;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
 
   void initState() {
     super.initState();
-    FruitNotifier fruitNotifier = Provider.of<FruitNotifier>(context, listen: false);
+    FoodNotifier fruitNotifier = Provider.of<FoodNotifier>(context, listen: false);
 
     if (fruitNotifier.currentFruit != null) {
       _currentFruit = fruitNotifier.currentFruit;
     } else {
-      _currentFruit = Fruit();
+      _currentFruit = Food();
     }
 
   }
@@ -217,9 +217,7 @@ class _DonationState extends State<Donation> {
 
 
 
-
-
-  donateFood(Fruit fruit, String itemName, String foodType) async{
+  donateFood(Food fruit, String itemName, String foodType) async{
     CollectionReference foodRef = await Firestore.instance.collection(foodType)
         .document('fruitstorage').collection(itemName);
     DocumentReference documentReference = await foodRef.add(fruit.toMap());

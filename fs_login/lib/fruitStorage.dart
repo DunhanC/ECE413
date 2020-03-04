@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import 'package:fs_login/fruit_notifier.dart';
-import 'package:fs_login/fruit.dart';
+import 'package:fs_login/food_notifier.dart';
+import 'package:fs_login/food.dart';
 import 'package:fs_login/Pages/home.dart';
 
 class Fruitstorage extends StatefulWidget{
@@ -16,14 +16,14 @@ class _FruitStorage extends State<Fruitstorage> {
   @override
   void initState(){
 
-    FruitNotifier fruitNotifier = Provider.of<FruitNotifier>(context,listen: false);
+    FoodNotifier fruitNotifier = Provider.of<FoodNotifier>(context,listen: false);
     getFruits(fruitNotifier);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    FruitNotifier fruitNotifier = Provider.of<FruitNotifier>(context);
+    FoodNotifier fruitNotifier = Provider.of<FoodNotifier>(context);
     return Scaffold(
       appBar: AppBar(
 
@@ -59,20 +59,17 @@ class _FruitStorage extends State<Fruitstorage> {
   }
 }
 
-getFruits(FruitNotifier fruitNotifier) async{
+getFruits(FoodNotifier fruitNotifier) async{
   
   QuerySnapshot snapshot = await Firestore.instance.collection('Fruit').document('fruitstorage').collection('Apple').getDocuments();
 
-  List<Fruit> _fruitList = [];
+  List<Food> _fruitList = [];
   snapshot.documents.forEach((document){
 
-    Fruit fruit = Fruit.fromMap(document.data);
+    Food fruit = Food.fromMap(document.data);
     _fruitList.add(fruit);
 
   });
-
-
-
 
   fruitNotifier.fruitList = _fruitList;
 }
