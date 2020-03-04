@@ -99,7 +99,7 @@ class _NHomeState extends State<NHome> {
                 },
               ),
               new ListTile(
-                title: new Text("My Oders"),
+                title: new Text("My Orders"),
                 leading: new Icon(Icons.shopping_basket),
               ),
               new Divider(
@@ -113,7 +113,7 @@ class _NHomeState extends State<NHome> {
               new ListTile(
 
                 leading: new Icon(Icons.exit_to_app),
-                title: new Text("Log out"),
+                title: new Text("Log Out"),
 
                 onTap: (){
                   signout(authNotifier);
