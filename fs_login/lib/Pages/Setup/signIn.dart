@@ -273,48 +273,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                 ),
               ),
             ),
-/*
-            SizedBox(height: 15.0),
-            Container(
-              padding: EdgeInsets.only(top: 10.0, left: 20.0,right: 20.0),
-              height: 45.0,
-              color: Colors.transparent,
-              child: GestureDetector(
-                onTap: (){
-                 // _loginWithFB();
 
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: Colors.black,
-                          style: BorderStyle.solid,
-                          width: 1.0
-                      ),
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(20.0)
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Center(
-                        child: Image.asset('assets/images/facebook.png',width: 30.0,height: 30.0),
-                      ),
-                      SizedBox(width: 10.0),
-                      Center(
-                        child: Text('Login with facebook',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Montserrat'
-                            )
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-*/
             SizedBox(height: 20.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -349,4 +308,3 @@ class _MyLoginPageState extends State<MyLoginPage> {
   }
 
 }
-

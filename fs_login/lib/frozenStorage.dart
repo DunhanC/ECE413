@@ -4,30 +4,30 @@ import 'package:provider/provider.dart';
 import 'package:fs_login/food_notifier.dart';
 import 'package:fs_login/food.dart';
 import 'package:fs_login/Pages/home.dart';
-import 'dart:io';
-class Fruitstorage extends StatefulWidget{
+
+class Frozenstorage extends StatefulWidget{
   @override
-  _FruitStorage createState()=> _FruitStorage();
+  _FrozenStorage createState()=> _FrozenStorage();
 
 }
 
-class _FruitStorage extends State<Fruitstorage> {
+class _FrozenStorage extends State<Frozenstorage> {
 
   @override
   void initState(){
 
-    FoodNotifier foodNotifier = Provider.of<FoodNotifier>(context,listen: false);
-    getFruits(foodNotifier);
+    FoodNotifier frozenNotifier = Provider.of<FoodNotifier>(context,listen: false);
+    getFruits(frozenNotifier);
     super.initState();
   }
-  File imageFile;
+
   @override
   Widget build(BuildContext context) {
-    FoodNotifier foodNotifier = Provider.of<FoodNotifier>(context);
+    FoodNotifier frozenNotifier = Provider.of<FoodNotifier>(context);
     return Scaffold(
       appBar: AppBar(
 
-        title: Text('Fruit List'),
+        title: Text('Frozen Food List'),
         leading: IconButton(icon: Icon(Icons.arrow_back),
           onPressed: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Home(),fullscreenDialog: true)),
         ),
@@ -36,15 +36,14 @@ class _FruitStorage extends State<Fruitstorage> {
       body: ListView.separated(
         itemBuilder: (BuildContext context, int index){
           return ListTile(
-            leading: Image.network(foodNotifier.foodList[index].imagePath),
-            title: Text("Item: " + foodNotifier.foodList[index].itemname),
-            subtitle: Text("Name: " + foodNotifier.foodList[index].pname),
+            title: Text("ItemName: " + frozenNotifier.frozenList[index].itemname),
+            subtitle: Text("Provider Name: " + frozenNotifier.frozenList[index].pname),
 
 
           );
 
         },
-        itemCount: foodNotifier.foodList.length,
+        itemCount: frozenNotifier.frozenList.length,
         separatorBuilder: (BuildContext context, int index){
           return Divider(color: Colors.black,
           );
@@ -60,19 +59,18 @@ class _FruitStorage extends State<Fruitstorage> {
   }
 }
 
-getFruits(FoodNotifier foodNotifier) async{
+getFruits(FoodNotifier frozenNotifier) async{
 
-  QuerySnapshot snapshot = await Firestore.instance.collection('Category').document('FoodCategory').collection('Fruit').getDocuments();
+  QuerySnapshot snapshot = await Firestore.instance.collection('Frozen Food').document('frozenstorage').collection('Apple').getDocuments();
 
-  List<Food> _foodList = [];
+  List<Food> _frozenList = [];
   snapshot.documents.forEach((document){
 
-    Food fruit = Food.fromMap(document.data);
-    _foodList.add(fruit);
+    Food frozen = Food.fromMap(document.data);
+    _frozenList.add(frozen);
 
   });
 
-
-  foodNotifier.foodList = _foodList;
+  frozenNotifier.foodList = _frozenList;
 }
 

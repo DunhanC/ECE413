@@ -1,8 +1,11 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
+import 'package:location/location.dart';
 
 class NMap extends StatefulWidget {
   @override
@@ -11,8 +14,87 @@ class NMap extends StatefulWidget {
 
 class _NMapState extends State<NMap> {
   Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController gmapController;
+  Location _locationTracker = new Location();
+  Circle circle;
+  StreamSubscription _locationSubscription;
+  static final CameraPosition initialLocation = CameraPosition(target: LatLng(25.716250, -80.280849),zoom: 12);
+  Marker marker;
+
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  Future<Uint8List> getMarker() async{
+    ByteData byteData = await DefaultAssetBundle.of(context).load("assets/images/car_Icon.jpg");
+    return byteData.buffer.asUint8List();
+
+  }
+
+  void updateMarkerAndCircle(LocationData newLocalData, Uint8List imageData) {
+    LatLng latLng = LatLng(newLocalData.latitude, newLocalData.longitude);
+    this.setState((){
+      marker = Marker(
+        markerId: MarkerId("home"),
+        position: latLng,
+        rotation: newLocalData.heading,
+        draggable: false,
+        zIndex: 2,
+        flat: true,
+        anchor: Offset(0.5,0.5),
+        icon: BitmapDescriptor.fromBytes(imageData)
+      );
+
+      circle = Circle(
+        circleId: CircleId("car"),
+        radius: newLocalData.accuracy,
+        zIndex: 1,
+        strokeColor: Colors.redAccent,
+        center: latLng,
+        fillColor: Colors.redAccent.withAlpha(70)
+      );
+
+    });
+
+  }
+
+
+  void getCurrentLocation() async{
+    try{
+      Uint8List imageData = await getMarker();
+      var location = await _locationTracker.getLocation();
+      updateMarkerAndCircle(location, imageData);
+
+      if(_locationSubscription != null){
+        _locationSubscription.cancel();
+
+      }
+
+      _locationSubscription = _locationTracker.onLocationChanged().listen((newLocalData){
+        if(gmapController != null){
+
+          gmapController.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+              bearing: 192.8334901395799,
+              target: LatLng(newLocalData.latitude, newLocalData.longitude),
+              tilt: 0,
+              zoom: 18.00
+              )
+            )
+          );
+        }
+
+
+       }
+      );
+
+  } on PlatformException catch(e){
+      if(e.code == 'PERMISSION_DENIED'){
+        debugPrint("Permission Denied");
+
+      }
+    }
+  }
+
+
 
   @override
 
@@ -20,9 +102,9 @@ class _NMapState extends State<NMap> {
   var clients = [];
   void initState(){
     super.initState();
-    Geolocator().getCurrentPosition().then((currloc) {
+    Geolocator().getCurrentPosition().then((currLoc) {
       setState(() {
-        currentLocation = currloc;
+        currentLocation = currLoc;
         populateClients();
       });
 
@@ -44,7 +126,7 @@ class _NMapState extends State<NMap> {
 
   }
 
-initMarker(client, docId){
+  initMarker(client, docId){
     var markerIdVal = docId;
     final MarkerId markerId = MarkerId(markerIdVal);
 
@@ -57,9 +139,11 @@ initMarker(client, docId){
       // adding a new marker to map
       markers[markerId] = marker;
     });
+  }
 
 
-}
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,13 +165,18 @@ initMarker(client, docId){
       body: Stack(
         children: <Widget>[
           _googlemap(context),
-          //_zoominfunction(),
-          //_zoommoutfunction(),
+          _zoominfunction(),
+          _zoomoutfunction(),
 
 
         ],
       ),
-
+      floatingActionButton:  FloatingActionButton(
+        child: Icon(Icons.location_searching, color: Colors.redAccent,size: 25,),
+        onPressed: (){
+          getCurrentLocation();
+        },
+      ),
 
     );
   }
@@ -99,12 +188,16 @@ Widget _googlemap(BuildContext context){
       width: MediaQuery.of(context).size.width,
       child: GoogleMap(
         mapType: MapType.normal,
-        initialCameraPosition: CameraPosition(target: LatLng(25.716250, -80.280849),zoom: 12),
+        initialCameraPosition: initialLocation,
         onMapCreated: (GoogleMapController controller){
 
-          _controller.complete(controller);
-
+          //_controller.complete(controller);
+          gmapController = controller;
         },
+
+        myLocationButtonEnabled: true,
+        compassEnabled: true,
+
 /*
         markers:{
           miamiMarker,
@@ -134,6 +227,23 @@ Widget _zoominfunction(){
     );
 }
 
+
+  Widget _zoomoutfunction(){
+
+    return Align(
+      alignment: Alignment.topRight,
+      child: IconButton(
+        icon: Icon(Icons.add_box, color: Colors.redAccent,),
+        onPressed: (){
+          zoomVal ++;
+          _minus(zoomVal);
+
+        },
+      ),
+    );
+  }
+
+
 Future<void> _minus(double zoomVal) async{
     
     final GoogleMapController controller = await _controller.future;
@@ -159,3 +269,4 @@ Marker miami2Marker = Marker(
   icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
 
 );
+
