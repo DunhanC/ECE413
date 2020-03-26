@@ -55,9 +55,9 @@ class _VegetableStorage extends State<Vegetablestorage> {
 
 getProtein(FoodNotifier vegetableNotifier) async {
   QuerySnapshot snapshot = await Firestore.instance
-      .collection('vegetable')
-      .document('vegetabletorage')
-      .collection('Tomato')
+      .collection('Category')
+      .document('FoodCategory')
+      .collection('Vegetable')
       .getDocuments();
 
   List<Food> _vegetableList = [];
