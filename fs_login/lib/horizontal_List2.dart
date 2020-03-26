@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fs_login/fruitStorage.dart';
+import 'package:fs_login/proteinstorage.dart';
 
 class HorizontalList1 extends StatelessWidget {
   @override
@@ -6,79 +8,171 @@ class HorizontalList1 extends StatelessWidget {
     return Container(
       height: 80.0,
       child: ListView(
-        scrollDirection:  Axis.horizontal,
+        scrollDirection: Axis.horizontal,
         children: <Widget>[
-          Category(
-            image_location: 'https://img.icons8.com/doodle/48/000000/tin-can--v1.png',
-            image_caption: 'Nut6',
+          MaterialButton(
+            minWidth: 105,
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Fruitstorage(),
+                      fullscreenDialog: true));
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.network(
+                  'https://img.icons8.com/doodle/48/000000/tin-can--v1.png',
+                  width: 55.0,
+                  height: 35.0,
+                ),
+                Text(
+                  'Canned',
+                  style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
-          Category(
-            image_location: 'https://img.icons8.com/pastel-glyph/64/000000/orange-soda--v1.png',
-            image_caption: 'Nut7',
+          MaterialButton(
+            minWidth: 105,
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Proteinstorage(),
+                      fullscreenDialog: true));
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.network(
+                    'https://img.icons8.com/pastel-glyph/64/000000/orange-soda--v1.png',
+                    width: 55.0,
+                    height: 35.0),
+                Text(
+                  'Drink',
+                  style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
-          Category(
-            image_location: 'https://img.icons8.com/doodle/48/000000/soup-plate.png',
-            image_caption: 'Nut8',
+          MaterialButton(
+            minWidth: 105,
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Fruitstorage(),
+                      fullscreenDialog: true));
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.network(
+                    'https://img.icons8.com/doodle/48/000000/soup-plate.png',
+                    width: 55.0,
+                    height: 35.0),
+                Text(
+                  'Instant',
+                  style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
-          Category(
-            image_location: 'https://img.icons8.com/cotton/64/000000/italian-pizza.png',
-            image_caption: 'Nut9',
+          MaterialButton(
+            minWidth: 105,
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Fruitstorage(),
+                      fullscreenDialog: true));
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.network(
+                    'https://img.icons8.com/cotton/64/000000/dressed-fish.png',
+                    width: 55.0,
+                    height: 35.0),
+                Text(
+                  'Seafood',
+                  style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
-          Category(
-            image_location: 'https://img.icons8.com/cotton/64/000000/fish-food.png',
-            image_caption: 'Nut10',
+          MaterialButton(
+            minWidth: 105,
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Fruitstorage(),
+                      fullscreenDialog: true));
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.network(
+                    'https://img.icons8.com/cotton/64/000000/fruit-ice-cream-cone.png',
+                    width: 55.0,
+                    height: 35.0),
+                Text(
+                  'Dessert',
+                  style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
           ),
-          Category(
-            image_location: 'https://img.icons8.com/dusk/64/000000/organic-food.png',
-            image_caption: 'Nut11',
-          ),
-
         ],
       ),
     );
   }
 }
 
-
-class Category extends StatelessWidget{
+class Category extends StatelessWidget {
   final String image_location;
   final String image_caption;
 
-  Category({
-
-    this.image_location,
-    this.image_caption
-
-  });
+  Category({this.image_location, this.image_caption});
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Padding(padding: const EdgeInsets.all(2.0),
-      child: InkWell(onTap: (){},
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: InkWell(
+        onTap: () {},
         child: Container(
           height: 100.0,
           width: 100.0,
           child: ListTile(
-              title: Image.network(image_location,
+              title: Image.network(
+                image_location,
                 width: 55.0,
-                height: 35.0,),
+                height: 35.0,
+              ),
               subtitle: Container(
-
                 alignment: Alignment.topCenter,
-                child: Text(image_caption,
-                  style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.bold
-
-                  ),
+                child: Text(
+                  image_caption,
+                  style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
                 ),
-              )
-          ),
+              )),
         ),
-
       ),
-
     );
   }
 }
+
+
+
+
+
+
+
+
+
+

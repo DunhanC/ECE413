@@ -3,8 +3,8 @@ import 'package:fs_login/Pages/BottomNavigation/naviHome.dart';
 import 'package:fs_login/Pages/BottomNavigation/naviMap.dart';
 import 'package:fs_login/Pages/BottomNavigation/naviFavor.dart';
 import 'package:fs_login/Pages/BottomNavigation/naviFeeback.dart';
-
-
+import 'package:fs_login/Modal.dart';
+import 'package:fs_login/fruitStorage.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -12,7 +12,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
+  Modal modal = new Modal();
   int currentTab = 0; // to keep track of active tab index
   final List<Widget> screens = [
     NHome(),
@@ -35,7 +35,7 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Colors.redAccent,
-        onPressed: () {},
+        onPressed: () => modal.mainBottomSheet(context),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
@@ -79,7 +79,7 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                       setState(() {
                         currentScreen =
-                            NFavor(); // if user taps on this dashboard tab will be active
+                            Fruitstorage(); // if user taps on this dashboard tab will be active
                         currentTab = 1;
                       });
                     },
@@ -112,7 +112,9 @@ class _HomeState extends State<Home> {
                     onPressed: () {
                       setState(() {
                         currentScreen =
-                            NMap(); // if user taps on this dashboard tab will be active
+                        //NMap();
+                            NFeeback();
+                            // if user taps on this dashboard tab will be active
                         currentTab = 2;
                       });
                     },
