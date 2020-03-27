@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fs_login/fruitStorage.dart';
-import 'package:fs_login/proteinstorage.dart';
+import 'package:fs_login/drinkstorage.dart';
+import 'package:fs_login/instantstorage.dart';
+import 'package:fs_login/seafoodstorage.dart';
+import 'package:fs_login/dessertstorage.dart';
+import 'package:fs_login/cannedstorage.dart';
 
 class HorizontalList1 extends StatelessWidget {
   @override
@@ -16,7 +19,7 @@ class HorizontalList1 extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Fruitstorage(),
+                      builder: (context) => Cannedstorage(),
                       fullscreenDialog: true));
             },
             child: Column(
@@ -40,7 +43,7 @@ class HorizontalList1 extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Proteinstorage(),
+                      builder: (context) => Drinkstorage(),
                       fullscreenDialog: true));
             },
             child: Column(
@@ -63,7 +66,7 @@ class HorizontalList1 extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Fruitstorage(),
+                      builder: (context) => Instantstorage(),
                       fullscreenDialog: true));
             },
             child: Column(
@@ -86,7 +89,7 @@ class HorizontalList1 extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Fruitstorage(),
+                      builder: (context) => Seafoodstorage(),
                       fullscreenDialog: true));
             },
             child: Column(
@@ -109,7 +112,7 @@ class HorizontalList1 extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Fruitstorage(),
+                      builder: (context) => Dessertstorage(),
                       fullscreenDialog: true));
             },
             child: Column(

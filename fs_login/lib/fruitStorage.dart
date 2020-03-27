@@ -27,7 +27,7 @@ class _FruitStorage extends State<Fruitstorage> {
     FoodNotifier foodNotifier = Provider.of<FoodNotifier>(context);
     return Scaffold(
       appBar: AppBar(
-
+        backgroundColor: Colors.redAccent,
         title: Text('Fruit List'),
         leading: IconButton(icon: Icon(Icons.arrow_back),
           onPressed: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Home(),fullscreenDialog: true)),

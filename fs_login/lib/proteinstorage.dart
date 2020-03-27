@@ -4,67 +4,75 @@ import 'package:provider/provider.dart';
 import 'package:fs_login/food_notifier.dart';
 import 'package:fs_login/food.dart';
 import 'package:fs_login/Pages/home.dart';
-
-class Proteinstorage extends StatefulWidget {
+import 'dart:io';
+class Proteinstorage extends StatefulWidget{
   @override
-  _ProteinStorage createState() => _ProteinStorage();
+  _ProteinStorage createState()=> _ProteinStorage();
+
 }
 
+
 class _ProteinStorage extends State<Proteinstorage> {
-  @override
-  void initState() {
-    FoodNotifier proteinNotifier =
-        Provider.of<FoodNotifier>(context, listen: false);
-    getProtein(proteinNotifier);
-    super.initState();
-  }
 
   @override
+  void initState(){
+
+    FoodNotifier foodNotifier = Provider.of<FoodNotifier>(context,listen: false);
+    getProteins(foodNotifier);
+    super.initState();
+  }
+  File imageFile;
+  @override
   Widget build(BuildContext context) {
-    FoodNotifier proteinNotifier = Provider.of<FoodNotifier>(context);
+    FoodNotifier foodNotifier = Provider.of<FoodNotifier>(context);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.redAccent,
         title: Text('Protein List'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Home(), fullscreenDialog: true)),
+        leading: IconButton(icon: Icon(Icons.arrow_back),
+          onPressed: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Home(),fullscreenDialog: true)),
         ),
       ),
+
       body: ListView.separated(
-        itemBuilder: (BuildContext context, int index) {
+        itemBuilder: (BuildContext context, int index){
           return ListTile(
-            title: Text(
-                "ItemName: " + proteinNotifier.proteinList[index].itemname),
-            subtitle: Text(
-                "Provider Name: " + proteinNotifier.proteinList[index].pname),
+            leading: Image.network(foodNotifier.foodList[index].imagePath),
+            title: Text("Item: " + foodNotifier.foodList[index].itemname),
+            subtitle: Text("Name: " + foodNotifier.foodList[index].pname),
+
+
           );
+
         },
-        itemCount: proteinNotifier.proteinList.length,
-        separatorBuilder: (BuildContext context, int index) {
-          return Divider(
-            color: Colors.black,
+        itemCount: foodNotifier.foodList.length,
+        separatorBuilder: (BuildContext context, int index){
+          return Divider(color: Colors.black,
           );
+
+
         },
+
       ),
+
+
+
     );
   }
 }
 
-getProtein(FoodNotifier proteinNotifier) async {
-  QuerySnapshot snapshot = await Firestore.instance
-      .collection('Protein')
-      .document('proteintorage')
-      .collection('Beef')
-      .getDocuments();
+getProteins(FoodNotifier foodNotifier) async{
 
-  List<Food> _proteinList = [];
-  snapshot.documents.forEach((document) {
-    Food fruit = Food.fromMap(document.data);
-    _proteinList.add(fruit);
+  QuerySnapshot snapshot = await Firestore.instance.collection('Category').document('FoodCategory').collection('Protein').getDocuments();
+
+  List<Food> _foodList = [];
+  snapshot.documents.forEach((document){
+
+    Food protein = Food.fromMap(document.data);
+    _foodList.add(protein);
+
   });
 
-  proteinNotifier.proteinList = _proteinList;
+
+  foodNotifier.foodList = _foodList;
 }

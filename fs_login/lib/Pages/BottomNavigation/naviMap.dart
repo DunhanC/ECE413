@@ -97,7 +97,8 @@ class _NMapState extends State<NMap> {
 
 
   @override
-
+  double zoomVal =5.0;
+  /*
   var currentLocation;
   var clients = [];
   void initState(){
@@ -111,7 +112,6 @@ class _NMapState extends State<NMap> {
 
     });
   }
-  double zoomVal =5.0;
 
   populateClients(){
     clients=[];
@@ -142,7 +142,7 @@ class _NMapState extends State<NMap> {
   }
 
 
-
+*/
 
   @override
   Widget build(BuildContext context) {
