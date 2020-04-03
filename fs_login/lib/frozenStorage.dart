@@ -40,7 +40,13 @@ class _FrozenStorage extends State<Frozenstorage> {
             leading: Image.network(foodNotifier.foodList[index].imagePath),
             title: Text("Item: " + foodNotifier.foodList[index].itemname),
             subtitle: Text("Name: " + foodNotifier.foodList[index].pname),
+            trailing: RaisedButton(
+              color: Colors.redAccent,
+              child: Text('Reserve'),
+              onPressed: () async{
 
+              },
+            ),
 
           );
 
@@ -67,7 +73,6 @@ getFrozen(FoodNotifier foodNotifier) async{
 
   List<Food> _foodList = [];
   snapshot.documents.forEach((document){
-
     Food frozen = Food.fromMap(document.data);
     _foodList.add(frozen);
 

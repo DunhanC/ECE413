@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fs_login/Pages/Setup/signIn.dart';
 import 'package:fs_login/Pages/BottomNavigation/profile.dart';
-//import 'package:google_sign_in/google_sign_in.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fs_login/horizontal_List.dart';
 import 'package:fs_login/horizontal_List2.dart';
@@ -10,6 +9,7 @@ import 'package:fs_login/dataSearch.dart';
 import 'package:fs_login/fs_api.dart';
 import 'package:fs_login/auth_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:fs_login/orders.dart';
 
 class NHome extends StatefulWidget {
   @override
@@ -99,8 +99,12 @@ class _NHomeState extends State<NHome> {
                 },
               ),
               new ListTile(
-                title: new Text("My Oders"),
+                title: new Text("My Orders"),
                 leading: new Icon(Icons.shopping_basket),
+                onTap: (){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Orders(),fullscreenDialog: true));
+
+                },
               ),
               new Divider(
                 indent: 15,

@@ -63,6 +63,7 @@ flutter:
      - assets/images/fs-logo.jpeg
      - assets/images/AccountPic.jpeg
      - assets/images/car_Icon.jpg
+     - assets/images/car_icon.png
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 

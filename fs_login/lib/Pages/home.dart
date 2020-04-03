@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fs_login/Pages/BottomNavigation/naviHome.dart';
-import 'package:fs_login/Pages/BottomNavigation/naviMap.dart';
+import 'package:fs_login/Pages/BottomNavigation/gMap.dart';
 import 'package:fs_login/Pages/BottomNavigation/naviFavor.dart';
 import 'package:fs_login/Pages/BottomNavigation/naviFeeback.dart';
 import 'package:fs_login/Modal.dart';

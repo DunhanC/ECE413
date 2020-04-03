@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fs_login/donation.dart';
 import 'package:fs_login/reserve.dart';
+import 'package:fs_login/category.dart';
 class Modal{
 
   mainBottomSheet(BuildContext context){
@@ -39,6 +40,6 @@ class Modal{
   }
 
   _action2(BuildContext context){
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Reservation(),fullscreenDialog: true));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> FoodCategories(),fullscreenDialog: true));
   }
 }
