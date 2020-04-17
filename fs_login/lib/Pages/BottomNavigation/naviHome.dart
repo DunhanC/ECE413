@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fs_login/Pages/Setup/signIn.dart';
 import 'package:fs_login/Pages/BottomNavigation/profile.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fs_login/horizontal_List.dart';
 import 'package:fs_login/horizontal_List2.dart';
@@ -9,6 +10,8 @@ import 'package:fs_login/dataSearch.dart';
 import 'package:fs_login/fs_api.dart';
 import 'package:fs_login/auth_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:fs_login/Pages/BottomNavigation/about.dart';
+import 'package:fs_login/Pages/BottomNavigation/help.dart';
 import 'package:fs_login/orders.dart';
 
 class NHome extends StatefulWidget {
@@ -99,11 +102,10 @@ class _NHomeState extends State<NHome> {
                 },
               ),
               new ListTile(
-                title: new Text("My Orders"),
+                title: new Text("My Oders"),
                 leading: new Icon(Icons.shopping_basket),
                 onTap: (){
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Orders(),fullscreenDialog: true));
-
                 },
               ),
               new Divider(
@@ -113,6 +115,20 @@ class _NHomeState extends State<NHome> {
               new ListTile(
                 title: new Text("Setting"),
                 leading: new Icon(Icons.settings),
+              ),
+              new ListTile(
+                title: new Text("About Us"),
+                leading: new Icon(Icons.info),
+                onTap: (){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> About(),fullscreenDialog: true));
+                },
+              ),
+              new ListTile(
+                title: new Text("Help"),
+                leading: new Icon(Icons.help),
+                onTap: (){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Help(),fullscreenDialog: true));
+                },
               ),
               new ListTile(
 

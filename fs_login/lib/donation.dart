@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fs_login/Counter.dart';
 import 'package:fs_login/Pages/home.dart';
+import 'package:fs_login/search_place.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:fs_login/food_notifier.dart';
 import 'package:fs_login/food.dart';
@@ -10,15 +14,29 @@ import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_maps_webservice/places.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:scoped_model/scoped_model.dart';
+
+const kGoogleApiKey = "AIzaSyCB1CWrcGJXIoudIpk0yG2N9RaNCvzJ1AQ";
+final homeScaffoldKey = GlobalKey<ScaffoldState>();
+GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
 class Donation extends StatefulWidget {
   @override
   _DonationState createState() => _DonationState();
 }
 
+
+
 class _DonationState extends State<Donation> {
+  DonationModel model;
   DateTime _StartDate = DateTime.now();
   DateTime _EndDate = DateTime.now().add(Duration(days: 7));
+  var _address;
+  var latt;
+  var longi;
+  var quantities;
 
   Future displayDateRangePicker(BuildContext context) async{
       final List<DateTime> picked = await DateRangePicker.showDatePicker(
@@ -107,42 +125,42 @@ class _DonationState extends State<Donation> {
       );
   }
 
-  Widget _pname(){
+  Widget _quantityContainer(DonationModel model){
 
-    return Container(
-      padding: EdgeInsets.only(top: 0.0, left: 150.0,right: 150.0),
-      child:
-//                  SizedBox(height: 20.0,),
-      TextFormField(
-        keyboardType: TextInputType.text,
-        validator: (String value) {
-          if (value.isEmpty) {
-            return 'Name is required';
-          }
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          RawMaterialButton(
+            onPressed: (){
+              model.decrement();
+              quantities = model.count;
+            },
+            child: Icon(FontAwesomeIcons.minus,
+            color: Colors.redAccent,
+            size: 15.0,),
+            shape: CircleBorder(),
+            elevation: 2.0,
+            fillColor: Color(0xffFAF4F2),
+            padding: const EdgeInsets.all(10.0),
+          ),
+          Text(model.count.toString(), style: TextStyle(fontSize: 15),),
+          RawMaterialButton(
+            onPressed: (){
+              model.increment();
+              quantities = model.count;
+            },
+            child: Icon(FontAwesomeIcons.plus,
+              color: Colors.redAccent,
+              size: 15.0,),
+            shape: CircleBorder(),
+            elevation: 2.0,
+            fillColor: Color(0xffFAF4F2),
+            padding: const EdgeInsets.all(10.0),
+          ),
 
-          if (value.length < 3 || value.length > 20) {
-            return 'Name must be more than 3 and less than 20';
-          }
-
-          return null;
-        },
-        onSaved: (value){
-          _currentFood.pname = value;
-          print(_currentFood.pname);
-        } ,
-        decoration: InputDecoration(
-            labelText: 'Your Name',
-            labelStyle: TextStyle(
-                fontSize: 15.0,
-                fontFamily: 'Montserrat',
-                fontWeight: FontWeight.bold,
-                color: Colors.grey
-            ),
-            focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey)
-            )
-        ),
-        //obscureText: true,
+        ],
       ),
     );
   }
@@ -265,8 +283,31 @@ class _DonationState extends State<Donation> {
   }
 
 
+
+  void onError(PlacesAutocompleteResponse response) {
+    homeScaffoldKey.currentState.showSnackBar(
+      SnackBar(content: Text(response.errorMessage)),
+    );
+  }
+
+  Future<void> _handlePressButton() async {
+    // show input autocomplete with selected mode
+    // then get the Prediction selected
+    Prediction p = await PlacesAutocomplete.show(
+      context: context,
+      apiKey: kGoogleApiKey,
+      onError: onError,
+      language: "en",
+      components: [Component(Component.country, "usa")],
+    );
+
+    displayPrediction(p, homeScaffoldKey.currentState);
+  }
+
+
   Widget build(BuildContext context) {
     return Scaffold(
+      key: homeScaffoldKey,
       resizeToAvoidBottomPadding: false,
       appBar: new AppBar(
         backgroundColor: Colors.redAccent,
@@ -304,11 +345,28 @@ class _DonationState extends State<Donation> {
                   children: <Widget>[
                     _foodTypes(),
                     _itemname(),
-                    _pname(),
+                    Material(
+                      child: ScopedModelDescendant<DonationModel>(
+                        builder: (context,child,model){
+                          return _quantityContainer(model);
+                        },
+                      ),
+                    ),
+
 
                   ],
                 ),
               ),
+
+              RaisedButton(
+                elevation: 7.0,
+                color: Colors.redAccent,
+                child: Text('Locate Place', style: TextStyle(color: Colors.white),),
+                onPressed: _handlePressButton
+              ),
+
+              Text(_address!= null?_address:'Choose Address'),
+
               SizedBox(height: 10,),
               Theme(
                 data: Theme.of(context).copyWith(
@@ -344,12 +402,14 @@ class _DonationState extends State<Donation> {
               RaisedButton(
                 elevation: 7.0,
                 color: Colors.redAccent,
-                child: Text('Donate'),
+                child: Text('Donate',style: TextStyle(color: Colors.white),),
                 onPressed: (){
-
+                  _currentFood.address = _address;
+                  _currentFood.quantity = quantities;
                   _currentFood.startDate = _StartDate;
                   _currentFood.endDate = _EndDate;
                   _currentFood.reserved = false;
+                  _currentFood.coordinates = GeoPoint(latt,longi);
                   _formKey.currentState.save();
                   uploadImage();
                 },
@@ -363,5 +423,28 @@ class _DonationState extends State<Donation> {
     );
   }
 
+  Future<Null> displayPrediction(Prediction p, ScaffoldState scaffold) async {
+    if (p != null) {
+      // get detail (lat/lng)
+      PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
+      final lat = detail.result.geometry.location.lat;
+      final lng = detail.result.geometry.location.lng;
+
+      setState(() {
+        _address = p.description;
+        latt = lat;
+        longi = lng;
+
+      });
+
+      print(_address);
+      print(latt);
+      print(longi);
+      scaffold.showSnackBar(
+        SnackBar(content: Text("${p.description} - $lat/$lng")),
+      );
+    }
+  }
 
 }
+

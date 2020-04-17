@@ -39,7 +39,7 @@ class _SeafoodStorage extends State<Seafoodstorage> {
           return ListTile(
             leading: Image.network(foodNotifier.foodList[index].imagePath),
             title: Text("Item: " + foodNotifier.foodList[index].itemname),
-            subtitle: Text("Name: " + foodNotifier.foodList[index].pname),
+            subtitle: Text("Name: " + foodNotifier.foodList[index].address),
             trailing: RaisedButton(
               color: Colors.redAccent,
               child: Text('Reserve'),

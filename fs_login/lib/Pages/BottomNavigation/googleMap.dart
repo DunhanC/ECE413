@@ -13,6 +13,7 @@ class food_mark {
         this.locationCoords});
 }
 
+
 final List<food_mark> foodShops = [
   food_mark(
       shopName: 'University of Miami',
@@ -20,12 +21,14 @@ final List<food_mark> foodShops = [
       locationCoords: LatLng(25.719546,-80.277107),
       thumbNail: 'https://res.cloudinary.com/popmenu/image/upload/c_limit,f_auto,h_1440,q_auto,w_1440/ykmqejwygnhqizxms6bh.jpg'
   ),
+  /*
   food_mark(
       shopName: 'University Inn',
       address: '1280 S Alhambra Cir',
       locationCoords: LatLng(25.710518, -80.280849),
       thumbNail: 'https://media2.s-nbcnews.com/j/newscms/2018_02/1309354/canned-foods-today-tease-180109_074cd38ce3f3d26fd10bb0fce13557e7.fit-760w.jpg'
   ),
+  */
   food_mark(
       shopName: 'School of Bussiness',
       address: '5250 University Dr',

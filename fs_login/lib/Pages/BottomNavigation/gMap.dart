@@ -1,10 +1,21 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:typed_data';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:fs_login/Pages/BottomNavigation/googleMap.dart';
+import 'package:fs_login/Pages/home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import 'package:fs_login/food_notifier.dart';
+import 'package:fs_login/food.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'dart:math' show cos, sqrt, asin;
+
 
 class NMap extends StatefulWidget {
   NMap({Key key, this.title}) : super(key: key);
@@ -22,14 +33,22 @@ class _NMapState extends State<NMap> {
   GoogleMapController _controller;
 
   List<Marker> allMarkers = [];
+
+  List<String> address_list = [];
+  List<double> _distance = [];
   PageController _pageController;
   int prevPage;
+  double _currentLat;
+  double _currentLon;
 
   @override
 
   void initState() {
     // TODO: implement initState
+    FoodNotifier foodNotifier = Provider.of<FoodNotifier>(context,listen: false);
     super.initState();
+    getFruits(foodNotifier);
+    /*
     foodShops.forEach((element) {
       allMarkers.add(Marker(
           markerId: MarkerId(element.shopName),
@@ -38,6 +57,7 @@ class _NMapState extends State<NMap> {
           InfoWindow(title: element.shopName, snippet: element.address),
           position: element.locationCoords));
     });
+    */
     _pageController = PageController(initialPage: 1, viewportFraction: 0.8)
       ..addListener(_onScroll);
   }
@@ -45,11 +65,15 @@ class _NMapState extends State<NMap> {
   void _onScroll() {
     if (_pageController.page.toInt() != prevPage) {
       prevPage = _pageController.page.toInt();
-      moveCamera();
+      //moveCamera();
     }
   }
 
-  _coffeeShopList(index) {
+  _coffeeShopList(FoodNotifier foodNotifier, index){
+    var arr = foodNotifier.foodList[index].address.split(",");
+
+    var _len = arr.length;
+
     return AnimatedBuilder(
       animation: _pageController,
       builder: (BuildContext context, Widget widget) {
@@ -68,7 +92,7 @@ class _NMapState extends State<NMap> {
       },
       child: InkWell(
           onTap: () {
-            // moveCamera();
+            moveCamera(foodNotifier, index);
           },
           child: Stack(children: [
             Center(
@@ -102,26 +126,55 @@ class _NMapState extends State<NMap> {
                                       topLeft: Radius.circular(10.0)),
                                   image: DecorationImage(
                                       image: NetworkImage(
-                                          foodShops[index].thumbNail),
+                                          foodNotifier.foodList[index].imagePath),
                                       fit: BoxFit.cover))),
                           SizedBox(width: 5.0),
-                          Column(
+                          Expanded(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  foodShops[index].shopName,
-                                  style: TextStyle(
-                                      fontSize: 12.5,
-                                      fontWeight: FontWeight.bold),
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: Container(child: Text(foodNotifier.foodList[index].itemname,
+                                    style: TextStyle(color: Colors.redAccent, fontSize: 18.0,fontWeight: FontWeight.bold),)),
                                 ),
-                                Text(
-                                  foodShops[index].address,
-                                  style: TextStyle(
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.w600),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Container(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          Container(child: Text("4.3",
+                                            style: TextStyle(color: Colors.black54, fontSize: 12.0,),)),
+                                          Container(child: Icon(
+                                            FontAwesomeIcons.solidStar, color: Colors.amber,
+                                            size: 15.0,),),
+                                          Container(child: Icon(
+                                            FontAwesomeIcons.solidStar, color: Colors.amber,
+                                            size: 15.0,),),
+                                          Container(child: Icon(
+                                            FontAwesomeIcons.solidStar, color: Colors.amber,
+                                            size: 15.0,),),
+                                          Container(child: Icon(
+                                            FontAwesomeIcons.solidStar, color: Colors.amber,
+                                            size: 15.0,),),
+                                          Container(child: Icon(
+                                            FontAwesomeIcons.solidStarHalf, color: Colors.amber,
+                                            size: 15.0,),),
+                                          Container(child: Text(_distance.elementAt(index).toString()+
+                                              "mi",
+                                            style: TextStyle(color: Colors.black54, fontSize: 12.0,),)),
+
+                                        ],)),
                                 ),
-                              ])
+                                Container(child: Text(arr[0]
+                                    //+ ',' + arr[_len-3] + ',' + arr[_len-2]
+                                    ,
+                                  style: TextStyle(color: Colors.black54, fontSize: 12.0,fontWeight: FontWeight.bold),)
+                                ),
+                              ],
+                            )
+                          )
                         ]))))
           ])),
     );
@@ -160,34 +213,59 @@ class _NMapState extends State<NMap> {
   }
 
   void getCurrentLocation() async {
-    try {
 
-      Uint8List imageData = await getMarker();
+    try {
+     // Uint8List imageData = await getMarker();
       var location = await _locationTracker.getLocation();
 
-      updateMarkerAndCircle(location, imageData);
+     // updateMarkerAndCircle(location, imageData);
 
       if (_locationSubscription != null) {
         _locationSubscription.cancel();
       }
 
 
-      _locationSubscription = _locationTracker.onLocationChanged().listen((newLocalData) {
+      _locationSubscription = _locationTracker.onLocationChanged().listen((newLocalData) async{
         if (_controller != null) {
+          /*
           _controller.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
               bearing: 192.8334901395799,
               target: LatLng(newLocalData.latitude, newLocalData.longitude),
               tilt: 0,
               zoom: 18.00)));
-          updateMarkerAndCircle(newLocalData, imageData);
-        }
-      });
 
+           */
+          _currentLat = newLocalData.latitude;
+          _currentLon = newLocalData.longitude;
+         // updateMarkerAndCircle(newLocalData, imageData);
+        }
+      }
+
+      );
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         debugPrint("Permission Denied");
       }
     }
+  }
+
+  void getDistance(lat2, lon2){
+/*
+    var dis = await Geolocator().distanceBetween(25.716250, -80.280849, endLatitude, endLongitude);
+    var distance = dis *0.000621371;
+    var value = double.parse(distance.toStringAsFixed(2));
+    print(value);
+*/
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 - c((lat2 - 25.716250) * p)/2 +
+        c(25.716250 * p) * c(lat2 * p) *
+            (1 - c((lon2 - -80.280849) * p))/2;
+    var distance = 12742 * 0.621371* asin(sqrt(a));
+    var value = double.parse(distance.toStringAsFixed(2));
+    //await new Future.delayed(new Duration(seconds: 1));
+    _distance.add(value);
+
   }
 
   @override
@@ -228,11 +306,16 @@ class _NMapState extends State<NMap> {
    */
 
   Widget build(BuildContext context) {
+    FoodNotifier foodNotifier = Provider.of<FoodNotifier>(context);
+    //getCurrentLocation();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.redAccent,
           title: Text('Maps'),
           centerTitle: true,
+          leading: IconButton(icon: Icon(Icons.arrow_back),
+            onPressed: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Home(),fullscreenDialog: true)),
+          ),
         ),
         body: Stack(
           children: <Widget>[
@@ -256,9 +339,9 @@ class _NMapState extends State<NMap> {
                 width: MediaQuery.of(context).size.width,
                 child: PageView.builder(
                   controller: _pageController,
-                  itemCount: foodShops.length,
+                  itemCount: foodNotifier.foodList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return _coffeeShopList(index);
+                    return _coffeeShopList(foodNotifier,index);
                   },
                 ),
               ),
@@ -267,15 +350,46 @@ class _NMapState extends State<NMap> {
         ),
 
     );
+
+  }
+
+  getFruits(FoodNotifier foodNotifier) async{
+
+    QuerySnapshot snapshot = await Firestore.instance.collection('Category').document('FoodCategory').collection('Fruit').getDocuments();
+    List<Food> _foodList = [];
+    await Future.delayed(new Duration(milliseconds: 1));
+    snapshot.documents.forEach((document){
+      if(document.data['Quantity'] > 0)  {
+        Food fruit = Food.fromMap(document.data);
+        _foodList.add(fruit);
+        address_list.add(document['Address']);
+        allMarkers.add(Marker(
+            markerId: MarkerId(document['ItemName']),
+            draggable: false,
+            infoWindow:
+            InfoWindow(
+                title: document['ItemName'], snippet: document['Address']),
+            position: LatLng(document['Coordinate'].latitude,
+                document['Coordinate'].longitude)));
+        print('1');
+        getDistance(document['Coordinate'].latitude,
+            document['Coordinate'].longitude);
+      }
+
+
+    });
+
+
+    foodNotifier.foodList = _foodList;
   }
 
 
 
 
-
-  moveCamera() {
+  moveCamera(FoodNotifier foodNotifier, index) {
     _controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: foodShops[_pageController.page.toInt()].locationCoords,
+        //target: foodShops[_pageController.page.toInt()].locationCoords,
+        target:LatLng(foodNotifier.foodList[index].coordinates.latitude, foodNotifier.foodList[index].coordinates.longitude),
         zoom: 14.0,
         bearing: 45.0,
         tilt: 45.0)));
