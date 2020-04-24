@@ -285,7 +285,7 @@ class _FruitStorage extends State<Fruitstorage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Container(child: Text("4.3",
+                  Container(child: Text("4.0",
                     style: TextStyle(color: Colors.black54, fontSize: 18.0,),)),
                   Container(child: Icon(
                     FontAwesomeIcons.solidStar, color: Colors.amber,
