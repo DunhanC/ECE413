@@ -145,7 +145,7 @@ class _FruitStorage extends State<Fruitstorage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.redAccent,
-        title: Text('Fruit List'),
+        title: Text('Fruits'),
         leading: IconButton(icon: Icon(Icons.arrow_back),
           onPressed: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Home(),fullscreenDialog: true)),
         ),
